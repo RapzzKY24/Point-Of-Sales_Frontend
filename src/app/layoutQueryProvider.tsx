@@ -9,7 +9,7 @@ export default function QueryProviderLayout({
   const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
-      <main>{children}</main>;
+      <main>{children}</main>
     </QueryClientProvider>
   );
 }

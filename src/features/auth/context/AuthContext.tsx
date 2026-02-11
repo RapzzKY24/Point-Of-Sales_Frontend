@@ -1,12 +1,14 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-import { AuthUser } from "../types/auth.types";
+import Cookies from "js-cookie";
+import { AuthUser, AuthSession } from "../types/auth.types";
 
 interface AuthContextType {
   user: AuthUser | null;
+  session: AuthSession | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (user: AuthUser, token?: string) => void;
+  login: (user: AuthUser, session: AuthSession) => void;
   logout: () => void;
   updateUser: (user: Partial<AuthUser>) => void;
 }
@@ -17,49 +19,71 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
+// Cookie names that better-auth uses
+const BETTER_AUTH_SESSION_COOKIE = "better-auth.session_token";
+const USER_DATA_COOKIE = "auth_user";
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [session, setSession] = useState<AuthSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load user from localStorage on mount
+  // Load user and session from cookies on mount
   useEffect(() => {
-    const loadUser = () => {
+    const loadAuthData = () => {
       try {
-        const storedUser = localStorage.getItem("auth_user");
-        const storedToken = localStorage.getItem("auth_token");
+        const sessionToken = Cookies.get(BETTER_AUTH_SESSION_COOKIE);
+        const storedUser = Cookies.get(USER_DATA_COOKIE);
 
-        if (storedUser && storedToken) {
-          setUser(JSON.parse(storedUser));
+        if (sessionToken && storedUser) {
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+
+          // Create session object from token (better-auth handles session internally)
+          const sessionData: AuthSession = {
+            id: sessionToken,
+            token: sessionToken,
+            expiresAt: new Date(
+              Date.now() + 30 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            userId: userData.id,
+          };
+          setSession(sessionData);
         }
       } catch (error) {
-        console.error("Error loading user from localStorage:", error);
+        console.error("Error loading auth data from cookies:", error);
         // Clear invalid data
-        localStorage.removeItem("auth_user");
-        localStorage.removeItem("auth_token");
+        Cookies.remove(BETTER_AUTH_SESSION_COOKIE);
+        Cookies.remove(USER_DATA_COOKIE);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadUser();
+    loadAuthData();
   }, []);
 
-  const login = (userData: AuthUser, token?: string) => {
+  const login = (userData: AuthUser, sessionData: AuthSession) => {
     setUser(userData);
+    setSession(sessionData);
 
-    // Store in localStorage
-    localStorage.setItem("auth_user", JSON.stringify(userData));
-    if (token) {
-      localStorage.setItem("auth_token", token);
-    }
+    // Store user data in cookie (session token is handled by better-auth)
+    Cookies.set(USER_DATA_COOKIE, JSON.stringify(userData), {
+      expires: 30, // 30 days
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
   };
 
   const logout = () => {
     setUser(null);
+    setSession(null);
 
-    // Clear localStorage
-    localStorage.removeItem("auth_user");
-    localStorage.removeItem("auth_token");
+    // Clear cookies
+    Cookies.remove(BETTER_AUTH_SESSION_COOKIE);
+    Cookies.remove(USER_DATA_COOKIE);
 
     // Redirect to login page
     window.location.href = "/auth/login";
@@ -69,13 +93,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (user) {
       const updatedUser = { ...user, ...updates };
       setUser(updatedUser);
-      localStorage.setItem("auth_user", JSON.stringify(updatedUser));
+      Cookies.set(USER_DATA_COOKIE, JSON.stringify(updatedUser), {
+        expires: 30,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      });
     }
   };
 
   const value: AuthContextType = {
     user,
-    isAuthenticated: !!user,
+    session,
+    isAuthenticated: !!user && !!session,
     isLoading,
     login,
     logout,

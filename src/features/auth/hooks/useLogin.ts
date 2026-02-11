@@ -2,7 +2,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { AuthApi } from "../api/auth.api";
-import { FormDataLogin } from "../types/auth.types";
+import { FormDataLogin, AuthSession } from "../types/auth.types";
 import { useAuth } from "../context/AuthContext";
 
 export const useLogin = () => {
@@ -14,8 +14,19 @@ export const useLogin = () => {
       return await AuthApi.login(data);
     },
     onSuccess: (userData) => {
-      // Store user in context and localStorage
-      setAuthUser(userData);
+      const mockSession: AuthSession = {
+        id: `session_${Date.now()}`,
+        token: `token_${Date.now()}`,
+        expiresAt: new Date(
+          Date.now() + 30 * 24 * 60 * 60 * 1000,
+        ).toISOString(), // 30 days
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        userId: userData.id,
+      };
+
+      // Store user in context and cookies
+      setAuthUser(userData, mockSession);
       router.replace("/");
       // TODO: Replace alert with proper toast notification
       alert("Login berhasil");

@@ -13,13 +13,27 @@ export type AuthUser = {
   id: string;
   name: string;
   email: string;
-  role?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  emailVerified: boolean;
+  image?: string | null;
+  role: "ADMIN" | "CASHIER" | "MANAGER";
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AuthSession = {
+  id: string;
+  expiresAt: string;
+  token: string;
+  createdAt: string;
+  updatedAt: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  userId: string;
 };
 
 export type AuthResponse = {
   user: AuthUser;
+  session: AuthSession;
   token?: string;
   message?: string;
 };
