@@ -1,1 +1,51 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary-50: #f5f7f0;
+  --color-primary-100: #e9eddc;
+  --color-primary-200: #c6d870;
+  --color-primary-300: #b8cc5e;
+  --color-primary-400: #a3b84d;
+  --color-primary-500: #8fa31e;
+  --color-primary-600: #7a8c1a;
+  --color-primary-700: #667516;
+  --color-primary-800: #556b2f;
+  --color-primary-900: #465a27;
+  --color-primary-950: #3a4a20;
+
+  --color-olive-50: #f5f7f0;
+  --color-olive-100: #e9eddc;
+  --color-olive-200: #d4dbb9;
+  --color-olive-300: #bac591;
+  --color-olive-400: #9fad6e;
+  --color-olive-500: #8fa31e;
+  --color-olive-600: #7a8c1a;
+  --color-olive-700: #667516;
+  --color-olive-800: #556b2f;
+  --color-olive-900: #465a27;
+}
+
+/* Fallback untuk browser yang tidak support @theme */
+:root {
+  --primary-50: #f5f7f0;
+  --primary-100: #e9eddc;
+  --primary-200: #c6d870;
+  --primary-300: #b8cc5e;
+  --primary-400: #a3b84d;
+  --primary-500: #8fa31e;
+  --primary-600: #7a8c1a;
+  --primary-700: #667516;
+  --primary-800: #556b2f;
+  --primary-900: #465a27;
+
+  --olive-50: #f5f7f0;
+  --olive-100: #e9eddc;
+  --olive-200: #d4dbb9;
+  --olive-300: #bac591;
+  --olive-400: #9fad6e;
+  --olive-500: #8fa31e;
+  --olive-600: #7a8c1a;
+  --olive-700: #667516;
+  --olive-800: #556b2f;
+  --olive-900: #465a27;
+}
