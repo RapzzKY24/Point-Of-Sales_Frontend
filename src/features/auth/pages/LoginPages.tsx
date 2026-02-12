@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLogin, useAuthForm } from "../hooks";
 import { FormDataLogin } from "../types/auth.types";
 import { AuthLayout, AuthFormField } from "../components";
+import "react-toastify/dist/ReactToastify.css";
 
 const LoginPages = () => {
   const { login, isLoading, error } = useLogin();
