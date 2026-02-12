@@ -77,7 +77,7 @@ const RegisterPages = () => {
           <span className="w-full border-t border-slate-300" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-slate-50 lg:bg-white px-2 text-slate-500">
+          <span className="bg-[#f5f7f0] lg:bg-white px-2 text-slate-500">
             Or sign up with
           </span>
         </div>
@@ -97,7 +97,7 @@ const RegisterPages = () => {
         Already have an account?{" "}
         <Link
           href="/auth/login"
-          className="font-semibold text-teal-600 hover:text-teal-500 hover:underline"
+          className="font-semibold text-[#7a8c1a] hover:text-[#667516] hover:underline"
         >
           Log in
         </Link>
