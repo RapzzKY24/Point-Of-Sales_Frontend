@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { AuthApi } from "../api/auth.api";
 import { FormDataLogin, AuthSession } from "../types/auth.types";
 import { useAuth } from "../context/AuthContext";
@@ -28,13 +31,12 @@ export const useLogin = () => {
       // Store user in context and cookies
       setAuthUser(userData, mockSession);
       router.replace("/");
-      // TODO: Replace alert with proper toast notification
-      alert("Login berhasil");
+      toast.success("Login berhasil", { position: "top-center" });
     },
-    onError: (error) => {
-      console.error("Login error:", error);
-      // TODO: Replace alert with proper toast notification
-      alert("Login gagal. Silakan coba lagi.");
+    onError: (error: any) => {
+      const errorMessage =
+        error?.response?.data?.message || "Login gagal. Silakan coba lagi.";
+      toast.error(errorMessage, { position: "top-center" });
     },
   });
 

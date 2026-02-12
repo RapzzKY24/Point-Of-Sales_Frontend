@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { AuthApi } from "../api/auth.api";
 import { FormDataRegister } from "../types/auth.types";
+import { toast } from "react-toastify";
 
 export const useRegister = () => {
   const router = useRouter();
@@ -11,15 +13,14 @@ export const useRegister = () => {
     mutationFn: async (data: FormDataRegister) => {
       return await AuthApi.register(data);
     },
-    onSuccess: (data) => {
-      // TODO: Replace alert with proper toast notification
-      alert("Registrasi berhasil! Silakan login.");
-      router.replace("/auth/login");
+    onSuccess: () => {
+      toast.success("Register Berhasil", { position: "top-center" });
+      router.replace("/");
     },
-    onError: (error) => {
-      console.error("Register error:", error);
-      // TODO: Replace alert with proper toast notification
-      alert("Registrasi gagal. Silakan coba lagi.");
+    onError: (error: any) => {
+      const errorMessage =
+        error?.response?.data?.message || "Login gagal. Silakan coba lagi.";
+      toast.error(errorMessage, { position: "top-center" });
     },
   });
 
