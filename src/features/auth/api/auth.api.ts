@@ -1,23 +1,30 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiInstace } from "@/lib/apiInstance";
-import {
-  FormDataLogin,
-  FormDataRegister,
-  AuthResponse,
-  AuthUser,
-} from "../types/auth.types";
+import { FormDataLogin, FormDataRegister, AuthUser } from "../types/auth.types";
+
+interface BetterAuthResponse {
+  user: AuthUser;
+  session?: {
+    id: string;
+    token: string;
+    expiresAt: string;
+  };
+  token?: string;
+}
 
 export const AuthApi = {
   login: async ({ email, password }: FormDataLogin): Promise<AuthUser> => {
     try {
-      const res = await ApiInstace.post<AuthResponse>("/auth/sign-in/email", {
-        email,
-        password,
-      });
+      const res = await ApiInstace.post<BetterAuthResponse>(
+        "/auth/sign-in/email",
+        {
+          email,
+          password,
+        },
+      );
       return res.data.user;
-    } catch (error: any) {
-      if (error.response?.data?.message) {
-        throw new Error(error.response.data.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
       }
       throw new Error("Login gagal. Silakan coba lagi.");
     }
@@ -29,15 +36,18 @@ export const AuthApi = {
     password,
   }: FormDataRegister): Promise<AuthUser> => {
     try {
-      const res = await ApiInstace.post<AuthResponse>("/auth/sign-up/email", {
-        email,
-        name,
-        password,
-      });
+      const res = await ApiInstace.post<BetterAuthResponse>(
+        "/auth/sign-up/email",
+        {
+          email,
+          name,
+          password,
+        },
+      );
       return res.data.user;
-    } catch (error: any) {
-      if (error.response?.data?.message) {
-        throw new Error(error.response.data.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
       }
       throw new Error("Registrasi gagal. Silakan coba lagi.");
     }

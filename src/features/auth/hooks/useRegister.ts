@@ -1,25 +1,43 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { AuthApi } from "../api/auth.api";
-import { FormDataRegister } from "../types/auth.types";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { AuthApi } from "../api/auth.api";
+import { FormDataRegister, AuthSession, AuthUser } from "../types/auth.types";
+import { useAuth } from "../context/AuthContext";
 
 export const useRegister = () => {
-  const router = useRouter();
+  const { login: setAuthUser } = useAuth();
 
   const registerMutation = useMutation({
     mutationFn: async (data: FormDataRegister) => {
       return await AuthApi.register(data);
     },
-    onSuccess: () => {
-      toast.success("Register Berhasil", { position: "top-center" });
-      router.replace("/");
+    onSuccess: async (userData: AuthUser) => {
+      const userId = String(userData.id);
+
+      const sessionData: AuthSession = {
+        id: `session_${Date.now()}`,
+        token: `token_${Date.now()}`,
+        expiresAt: new Date(
+          Date.now() + 30 * 24 * 60 * 60 * 1000,
+        ).toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        userId,
+      };
+
+      setAuthUser(userData, sessionData);
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      toast.success("Registrasi berhasil", { position: "top-center" });
+
+      window.location.href = "/";
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       const errorMessage =
-        error?.response?.data?.message || "Login gagal. Silakan coba lagi.";
+        error.message || "Registrasi gagal. Silakan coba lagi.";
       toast.error(errorMessage, { position: "top-center" });
     },
   });

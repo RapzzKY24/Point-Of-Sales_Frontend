@@ -1,41 +1,42 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthApi } from "../api/auth.api";
-import { FormDataLogin, AuthSession } from "../types/auth.types";
+import { FormDataLogin, AuthSession, AuthUser } from "../types/auth.types";
 import { useAuth } from "../context/AuthContext";
 
 export const useLogin = () => {
-  const router = useRouter();
   const { login: setAuthUser } = useAuth();
 
   const loginMutation = useMutation({
     mutationFn: async (data: FormDataLogin) => {
       return await AuthApi.login(data);
     },
-    onSuccess: (userData) => {
-      const mockSession: AuthSession = {
+    onSuccess: async (userData: AuthUser) => {
+      const userId = String(userData.id);
+
+      const sessionData: AuthSession = {
         id: `session_${Date.now()}`,
         token: `token_${Date.now()}`,
         expiresAt: new Date(
           Date.now() + 30 * 24 * 60 * 60 * 1000,
-        ).toISOString(), // 30 days
+        ).toISOString(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        userId: userData.id,
+        userId,
       };
 
-      // Store user in context and cookies
-      setAuthUser(userData, mockSession);
-      router.replace("/");
+      setAuthUser(userData, sessionData);
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       toast.success("Login berhasil", { position: "top-center" });
+
+      window.location.href = "/";
     },
-    onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.message || "Login gagal. Silakan coba lagi.";
+    onError: (error: Error) => {
+      const errorMessage = error.message || "Login gagal. Silakan coba lagi.";
       toast.error(errorMessage, { position: "top-center" });
     },
   });

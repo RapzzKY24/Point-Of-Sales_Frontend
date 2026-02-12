@@ -19,7 +19,6 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-// Cookie names that better-auth uses
 const BETTER_AUTH_SESSION_COOKIE = "better-auth.session_token";
 const USER_DATA_COOKIE = "auth_user";
 
@@ -28,64 +27,55 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [session, setSession] = useState<AuthSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load user and session from cookies on mount
   useEffect(() => {
-    const loadAuthData = () => {
-      try {
-        const sessionToken = Cookies.get(BETTER_AUTH_SESSION_COOKIE);
-        const storedUser = Cookies.get(USER_DATA_COOKIE);
+    try {
+      const sessionToken = Cookies.get(BETTER_AUTH_SESSION_COOKIE);
+      const storedUser = Cookies.get(USER_DATA_COOKIE);
 
-        if (sessionToken && storedUser) {
-          const userData = JSON.parse(storedUser);
-          setUser(userData);
+      if (storedUser) {
+        const userData = JSON.parse(storedUser) as AuthUser;
+        const token = sessionToken || `session_${Date.now()}`;
+        const userId = String(userData.id);
 
-          // Create session object from token (better-auth handles session internally)
-          const sessionData: AuthSession = {
-            id: sessionToken,
-            token: sessionToken,
-            expiresAt: new Date(
-              Date.now() + 30 * 24 * 60 * 60 * 1000,
-            ).toISOString(),
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            userId: userData.id,
-          };
-          setSession(sessionData);
-        }
-      } catch (error) {
-        console.error("Error loading auth data from cookies:", error);
-        // Clear invalid data
-        Cookies.remove(BETTER_AUTH_SESSION_COOKIE);
-        Cookies.remove(USER_DATA_COOKIE);
-      } finally {
-        setIsLoading(false);
+        const sessionData: AuthSession = {
+          id: token,
+          token: token,
+          expiresAt: new Date(
+            Date.now() + 30 * 24 * 60 * 60 * 1000,
+          ).toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          userId,
+        };
+
+        setUser(userData);
+        setSession(sessionData);
       }
-    };
-
-    loadAuthData();
+    } catch {
+      Cookies.remove(BETTER_AUTH_SESSION_COOKIE);
+      Cookies.remove(USER_DATA_COOKIE);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   const login = (userData: AuthUser, sessionData: AuthSession) => {
     setUser(userData);
     setSession(sessionData);
 
-    // Store user data in cookie (session token is handled by better-auth)
     Cookies.set(USER_DATA_COOKIE, JSON.stringify(userData), {
-      expires: 30, // 30 days
+      expires: 30,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "strict",
+      path: "/",
     });
   };
 
   const logout = () => {
     setUser(null);
     setSession(null);
-
-    // Clear cookies
-    Cookies.remove(BETTER_AUTH_SESSION_COOKIE);
-    Cookies.remove(USER_DATA_COOKIE);
-
-    // Redirect to login page
+    Cookies.remove(BETTER_AUTH_SESSION_COOKIE, { path: "/" });
+    Cookies.remove(USER_DATA_COOKIE, { path: "/" });
     window.location.href = "/auth/login";
   };
 
@@ -96,7 +86,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       Cookies.set(USER_DATA_COOKIE, JSON.stringify(updatedUser), {
         expires: 30,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "strict",
+        path: "/",
       });
     }
   };
