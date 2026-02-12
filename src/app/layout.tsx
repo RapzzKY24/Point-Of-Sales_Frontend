@@ -4,6 +4,7 @@ import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import QueryProviderLayout from "./layoutQueryProvider";
 import { ToastContainer } from "react-toastify";
+import { AuthProvider } from "@/features/auth/context/AuthContext";
 
 const JakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
@@ -25,8 +26,10 @@ export default function RootLayout({
       <body
         className={`${JakartaSans.variable} ${JakartaSans.variable} antialiased `}
       >
-        <QueryProviderLayout>{children}</QueryProviderLayout>
-        <ToastContainer aria-label={""} />
+        <AuthProvider>
+          <QueryProviderLayout>{children}</QueryProviderLayout>
+          <ToastContainer aria-label={""} />
+        </AuthProvider>
       </body>
     </html>
   );
