@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
 import QueryProviderLayout from "./layoutQueryProvider";
+import { ToastContainer } from "react-toastify";
 
 const JakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
@@ -24,6 +26,7 @@ export default function RootLayout({
         className={`${JakartaSans.variable} ${JakartaSans.variable} antialiased `}
       >
         <QueryProviderLayout>{children}</QueryProviderLayout>
+        <ToastContainer aria-label={""} />
       </body>
     </html>
   );
