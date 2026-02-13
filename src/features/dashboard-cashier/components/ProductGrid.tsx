@@ -2,28 +2,7 @@ import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 
 const PRODUCTS = [
-  {
-    id: 1,
-    name: "Mineral Water 600ml",
-    price: 2.0,
-    stock: "IN STOCK",
-    image: "/images/water.png",
-  },
-  {
-    id: 2,
-    name: "Potato Chips L",
-    price: 3.5,
-    stock: "IN STOCK",
-    image: "/images/chips.png",
-  },
   { id: 3, name: "Organic Bananas", price: 1.2, stock: "1.2KG", image: null },
-  {
-    id: 4,
-    name: "Dark Chocolate 70%",
-    price: 4.5,
-    stock: "IN STOCK",
-    image: "/images/choco.png",
-  },
   { id: 5, name: "Instant Coffee", price: 12.99, stock: "SALE", image: null },
   {
     id: 6,
@@ -34,6 +13,27 @@ const PRODUCTS = [
   },
   { id: 7, name: "Orange Juice 1L", price: 2.5, stock: "FRESH", image: null },
   { id: 8, name: "Butter Cookies", price: 5.5, stock: "SOLD OUT", image: null },
+  {
+    id: 9,
+    name: "Chocolate Milk 500ml",
+    price: 2.8,
+    stock: "LOW STOCK",
+    image: null,
+  },
+  {
+    id: 10,
+    name: "Mineral Water 1.5L",
+    price: 1.2,
+    stock: "FRESH",
+    image: null,
+  },
+  {
+    id: 11,
+    name: "Potato Chips BBQ",
+    price: 3.7,
+    stock: "SOLD OUT",
+    image: null,
+  },
 ];
 
 const ProductGrid = () => {
