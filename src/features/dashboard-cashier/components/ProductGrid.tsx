@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageIcon, LoaderIcon } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { dashboardCashier } from "../api/dashboard-cashier.api";
 import { useQuery } from "@tanstack/react-query";
