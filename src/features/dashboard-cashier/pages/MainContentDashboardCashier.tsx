@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import SearchBar from "@/components/shared/SearchBar";
 import CategoryBadges from "../components/CategoryBadges";
 import ProductGrid from "../components/ProductGrid";
@@ -6,20 +9,42 @@ import CartItemList from "../components/CartItemList";
 import SummaryItemCart from "../components/SummaryItemCart";
 import PaymentBadges from "../components/PaymentBadges";
 import ActionButtonPay from "@/components/shared/ActionButtonPay";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const MainContentDashboardCashier = () => {
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<
+    string | undefined
+  >();
+
+  const debouncedSearch = useDebounce(searchValue, 500);
+
+  const handleScanBarcode = () => {
+    console.log("Scan barcode clicked");
+  };
+
   return (
     <>
       {/* LEFT COLUMN: Catalog */}
       <section className="flex flex-1 flex-col gap-6 overflow-hidden rounded-3xl">
         {/* Categories Filter (Horizontal Scroll) */}
-        <CategoryBadges />
+        <CategoryBadges
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+        />
 
         {/* Search & Actions */}
-        <SearchBar />
+        <SearchBar
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
+          onScanBarcode={handleScanBarcode}
+        />
 
-        {/* Product Grid */}
-        <ProductGrid />
+        {/* Product Grid - Passing debounced search */}
+        <ProductGrid
+          searchQuery={debouncedSearch}
+          category={selectedCategory}
+        />
       </section>
 
       {/* RIGHT COLUMN: Cart */}

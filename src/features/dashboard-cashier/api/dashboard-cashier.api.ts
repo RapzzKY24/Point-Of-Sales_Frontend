@@ -1,12 +1,12 @@
 import { ApiInstace } from "@/lib/apiInstance";
 
 type queryGetProduct = {
-  categoryId: string;
-  productSku: string;
-  name: string;
-  sortBy: string;
-  take: string;
-  offset: string;
+  category?: string;
+  productSku?: string;
+  name?: string;
+  sortBy?: string;
+  take?: string;
+  offset?: string;
 };
 
 export const dashboardCashier = {
