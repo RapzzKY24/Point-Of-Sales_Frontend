@@ -4,7 +4,6 @@ import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { dashboardCashier } from "../api/dashboard-cashier.api";
 import { useQuery } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
 import { formatCurrency } from "@/lib/utils";
 
 type Product = {
@@ -19,15 +18,42 @@ type Product = {
   image?: string | null;
 };
 
-const ProductGrid = () => {
+type ProductGridProps = {
+  searchQuery?: string;
+  category?: string;
+};
+
+const ProductGrid = ({ searchQuery, category }: ProductGridProps) => {
   const { data: products, isLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: async () => await dashboardCashier.getProduct(),
+    queryKey: ["products", searchQuery, category],
+    queryFn: async () =>
+      await dashboardCashier.getProduct({
+        name: searchQuery,
+        category,
+      }),
     staleTime: 1000,
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (!products || products.length === 0) return notFound();
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-gray-500">Loading products...</p>
+      </div>
+    );
+  }
+
+  if (!products || products.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 text-center">
+        <p className="text-gray-500 text-lg">No products found</p>
+        {searchQuery && (
+          <p className="text-gray-400 text-sm mt-2">
+            Try searching with different keywords
+          </p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="grid flex-1 overflow-y-auto content-start grid-cols-2 gap-4 p-1 md:grid-cols-3 xl:grid-cols-4">
