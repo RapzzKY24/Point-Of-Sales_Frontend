@@ -15,6 +15,11 @@ export const dashboardCashier = {
     return res.data.data;
   },
 
+  getProductDetail: async (id: string) => {
+    const res = await ApiInstace.get(`products/${id}`);
+    return res.data.data;
+  },
+
   getCategories: async () => {
     const res = await ApiInstace.get("categories");
     return res.data.data;
