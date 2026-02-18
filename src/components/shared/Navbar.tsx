@@ -1,6 +1,6 @@
 "use client";
 import { useAuth } from "@/features/auth/context/AuthContext";
-import { Calendar1Icon, StoreIcon, User2Icon } from "lucide-react";
+import { Calendar1Icon, ShoppingBagIcon, User2Icon } from "lucide-react";
 
 const Navbar = () => {
   const { user } = useAuth();
@@ -9,11 +9,11 @@ const Navbar = () => {
       {/* Left: Brand */}
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-[#5F8D4E] shadow-sm shadow-green-900/10">
-            <StoreIcon className="text-white size-5" />
+          <div className="flex size-10 items-center justify-center rounded-full bg-[#5F8D4E] shadow-sm shadow-green-900/10">
+            <ShoppingBagIcon className="text-white size-5" />
           </div>
           <span className="text-2xl font-bold tracking-tight text-[#3A5A2A]">
-            Olive POS
+            Rapz Store
           </span>
         </div>
         <div className="h-6 w-px bg-gray-200"></div>
