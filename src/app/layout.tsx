@@ -26,6 +26,7 @@ export default function RootLayout({
       <body
         className={`${JakartaSans.variable} ${JakartaSans.variable} antialiased `}
       >
+        <div id="modal"></div>
         <AuthProvider>
           <QueryProviderLayout>{children}</QueryProviderLayout>
           <ToastContainer aria-label={""} />

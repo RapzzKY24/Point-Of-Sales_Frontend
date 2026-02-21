@@ -1,10 +1,15 @@
 "use client";
 
-import { ImageIcon } from "lucide-react";
+import { Eye, ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { dashboardCashier } from "../api/dashboard-cashier.api";
 import { useQuery } from "@tanstack/react-query";
 import { formatCurrency } from "@/lib/utils";
+import Link from "next/link";
+import { useState } from "react";
+import ProductDetailModal from "./ProductDetail";
+import Modal from "@/components/ui/Modal";
+import { Button } from "@/components/ui/Button";
 
 type Product = {
   id: string;
@@ -24,6 +29,8 @@ type ProductGridProps = {
 };
 
 const ProductGrid = ({ searchQuery, category }: ProductGridProps) => {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const { data: products, isLoading } = useQuery({
     queryKey: ["products", searchQuery, category],
     queryFn: async () =>
@@ -55,6 +62,16 @@ const ProductGrid = ({ searchQuery, category }: ProductGridProps) => {
     );
   }
 
+  const handleProductClick = (id: string) => {
+    setSelectedId(id);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedId(null);
+  };
+
   return (
     <div className="grid flex-1 overflow-y-auto content-start grid-cols-2 gap-4 p-1 md:grid-cols-3 xl:grid-cols-4">
       {products.map((product: Product) => {
@@ -70,6 +87,19 @@ const ProductGrid = ({ searchQuery, category }: ProductGridProps) => {
                 : "ring-gray-100 hover:ring-[#5F8D4E]/50"
             }`}
           >
+            <Button onClick={() => handleProductClick(product.id)}>
+              <Eye />
+            </Button>
+            <h1>{showModal}</h1>
+            {showModal && selectedId === product.id && (
+              <Modal>
+                <ProductDetailModal
+                  productId={selectedId}
+                  onClose={handleCloseModal}
+                />
+              </Modal>
+            )}
+
             {/* BAGIAN GAMBAR  */}
             <div className="relative aspect-4/3 w-full overflow-hidden bg-gray-50">
               {product.image ? (
@@ -122,7 +152,7 @@ const ProductGrid = ({ searchQuery, category }: ProductGridProps) => {
 
               {/* Product Name */}
               <h3 className="line-clamp-2 min-h-2.5rem text-sm font-bold text-gray-700 leading-tight group-hover:text-[#5F8D4E] transition-colors">
-                {product.name}
+                <Link href={`/products/${product.id}`}>{product.name}</Link>
               </h3>
 
               {/* Price & Action Placeholder */}
