@@ -5,11 +5,11 @@ import SearchBar from "@/components/shared/SearchBar";
 import CategoryBadges from "../components/CategoryBadges";
 import ProductGrid from "../components/ProductGrid";
 import HeaderCartItemList from "../components/HeaderCartItemList";
-import CartItemList from "../components/CartItemList";
 import SummaryItemCart from "../components/SummaryItemCart";
 import PaymentBadges from "../components/PaymentBadges";
 import ActionButtonPay from "@/components/shared/ActionButtonPay";
 import { useDebounce } from "@/hooks/useDebounce";
+import TransactionsItemList from "@/features/transaction-cashier/components/TransactionsItemList";
 
 const MainContentDashboardCashier = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -53,7 +53,7 @@ const MainContentDashboardCashier = () => {
         <HeaderCartItemList />
 
         {/* Items List */}
-        <CartItemList />
+        <TransactionsItemList />
 
         {/* Summary Section */}
         <div className="bg-white p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] z-10">
