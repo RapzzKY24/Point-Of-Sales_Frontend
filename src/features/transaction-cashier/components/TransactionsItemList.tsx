@@ -4,25 +4,6 @@ import Image from "next/image";
 import { TransactionApi } from "../api/transaction.api";
 import { formatCurrency } from "@/lib/utils";
 
-const CART_ITEMS = [
-  {
-    id: 1,
-    name: "Mineral Water 600ml",
-    price: 2.0,
-    qty: 1,
-    total: 2.0,
-    image: "/images/water.png",
-  },
-  {
-    id: 2,
-    name: "Potato Chips L",
-    price: 3.5,
-    qty: 2,
-    total: 7.0,
-    image: "/images/chips.png",
-  },
-];
-
 const TransactionsItemList = () => {
   const { data: transactionsItems } = useQuery({
     queryKey: ["transactions-items"],
@@ -47,12 +28,14 @@ const TransactionsItemList = () => {
                 {transaction.items[0].Product?.name}
               </h4>
               <span className="font-bold text-gray-900">
-                {transaction.items[0].price * transaction.items[0].quantity}
+                {formatCurrency(
+                  transaction.items[0].price * transaction.items[0].quantity,
+                )}
               </span>
             </div>
             <div className="flex items-end justify-between">
               <span className="text-xs font-medium text-gray-400">
-                {transaction.items[0].price}
+                {formatCurrency(transaction.items[0].price)}
               </span>
               <div className="flex h-7 items-center rounded-lg bg-white ring-1 ring-gray-200">
                 <button className="flex h-full w-7 items-center justify-center rounded-l-lg hover:bg-gray-50 text-gray-500">
