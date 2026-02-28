@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import QueryProviderLayout from "./layoutQueryProvider";
 import { ToastContainer } from "react-toastify";
 import { AuthProvider } from "@/features/auth/context/AuthContext";
+import { TransactionContextProvider } from "@/features/transaction-cashier/context/transactionItemsContext";
 
 const JakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
@@ -28,8 +29,12 @@ export default function RootLayout({
       >
         <div id="modal"></div>
         <AuthProvider>
-          <QueryProviderLayout>{children}</QueryProviderLayout>
-          <ToastContainer aria-label={""} />
+          <QueryProviderLayout>
+            <TransactionContextProvider>
+              {children}
+              <ToastContainer aria-label={""} />
+            </TransactionContextProvider>
+          </QueryProviderLayout>
         </AuthProvider>
       </body>
     </html>

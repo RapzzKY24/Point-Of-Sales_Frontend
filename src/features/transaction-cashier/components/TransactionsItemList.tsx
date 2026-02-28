@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { ImageIcon, MinusIcon, PlusIcon } from "lucide-react";
-import Image from "next/image";
+// import Image from "next/image";
 import { TransactionApi } from "../api/transaction.api";
 import { formatCurrency } from "@/lib/utils";
 
@@ -25,7 +25,7 @@ const TransactionsItemList = () => {
           <div className="flex flex-1 flex-col justify-between">
             <div className="flex justify-between">
               <h4 className="font-bold text-gray-800 line-clamp-1">
-                {transaction.items[0].Product?.name}
+                {transaction.items[0].product?.name}
               </h4>
               <span className="font-bold text-gray-900">
                 {formatCurrency(

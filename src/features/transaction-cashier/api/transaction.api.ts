@@ -23,7 +23,7 @@ export type CreateTransactionResponse = {
         id: string;
         quantity: number;
         price: number;
-        Product: {
+        product: {
           id: string;
           name: string;
           productSku: string;

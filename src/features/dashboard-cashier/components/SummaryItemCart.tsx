@@ -1,14 +1,17 @@
-type PropsSummaryItemCart = {
-  totalAmount: number;
-};
+"use client";
+import { useTransactionItem } from "@/features/transaction-cashier/context/transactionItemsContext";
+import { formatCurrency } from "@/lib/utils";
 
-const SummaryItemCart = ({ totalAmount }: PropsSummaryItemCart) => {
+const SummaryItemCart = () => {
+  const { totalPrice } = useTransactionItem();
   return (
     <div className="bg-white p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] z-10">
       <div className="mb-6 space-y-3">
         <div className="flex justify-between text-sm text-gray-500">
-          <span>Subtotal</span>
-          <span className="font-medium text-gray-900">$17.57</span>
+          <span>Sub Total</span>
+          <span className="font-medium text-gray-900">
+            {formatCurrency(totalPrice)}
+          </span>
         </div>
         <div className="flex justify-between text-sm text-gray-500">
           <span>Tax (11%)</span>
@@ -18,7 +21,7 @@ const SummaryItemCart = ({ totalAmount }: PropsSummaryItemCart) => {
         <div className="flex items-center justify-between">
           <span className="text-lg font-bold text-gray-800">Total</span>
           <span className="text-3xl font-black text-[#3A5A2A]">
-            {totalAmount}
+            {formatCurrency(totalPrice)}
           </span>
         </div>
       </div>
